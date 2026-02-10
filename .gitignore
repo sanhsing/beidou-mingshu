@@ -1,5 +1,12 @@
-__pycache__/
-*.pyc
+# 北斗命數 .gitignore
 .env
-.venv/
-*.db.bak
+*.pyc
+__pycache__/
+*.db
+data/
+logs/
+backups/
+ssl/*.pem
+ssl/*.key
+.DS_Store
+*.swp
