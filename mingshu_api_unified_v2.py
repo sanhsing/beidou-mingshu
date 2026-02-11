@@ -245,7 +245,7 @@ class MingshuUnifiedAPIv2:
         def add_headers(response):
             """添加響應頭"""
             response.headers["X-API-Version"] = self.VERSION
-            response.headers["X-Powered-By"] = "北斗命數"
+            response.headers["X-Powered-By"] = "Beidou-Mingshu"
             return response
     
     def _register_routes(self):
