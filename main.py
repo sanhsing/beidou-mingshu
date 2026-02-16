@@ -649,11 +649,11 @@ async def generate_full_report_api(query: FullReportQuery):
         report_text = generator.generate_full_report(
             birth=birth_data,
             lunar_info=lunar_info,
-            bazi_analysis=bazi_analysis,
-            ziwei_analysis=ziwei_analysis,
-            chart_data=chart_data,
-            pillars=pillars,
+            bazi=bazi_analysis,
+            ziwei=ziwei_analysis,
             name_data=name_data,
+            meihua=meihua_data,
+            year_gan=lunar_info.get('year_gan', ''),
         )
         
         return {

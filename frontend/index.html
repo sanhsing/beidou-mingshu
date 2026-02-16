@@ -270,18 +270,26 @@
                         <label for="includeMeihua">包含梅花易數分析</label>
                     </div>
                     <div id="meihuaFields" style="display:none;">
+                        <p style="font-size:13px; color:#666; margin-bottom:12px; line-height:1.6;">
+                            💡 <strong>起卦說明</strong>：留空則依系統時間自動起卦。<br>
+                            　 也可隨心想一個數字，或用眼前看到的數字（車牌、門牌等）。<br>
+                            　 數字對應：1乾天、2兌澤、3離火、4震雷、5巽風、6坎水、7艮山、8坤地（超過8則除8取餘）
+                        </p>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>上卦數</label>
-                                <input type="number" id="meihuaUpper" value="1" min="1">
+                                <label>上卦數（外卦）</label>
+                                <input type="number" id="meihuaUpper" placeholder="留空=系統時間" min="1">
+                                <small style="color:#888;">用途：代表外在環境、對方</small>
                             </div>
                             <div class="form-group">
-                                <label>下卦數</label>
-                                <input type="number" id="meihuaLower" value="2" min="1">
+                                <label>下卦數（內卦）</label>
+                                <input type="number" id="meihuaLower" placeholder="留空=系統時間" min="1">
+                                <small style="color:#888;">用途：代表自己、內心</small>
                             </div>
                             <div class="form-group">
                                 <label>動爻（1-6）</label>
-                                <input type="number" id="meihuaDong" value="1" min="1" max="6">
+                                <input type="number" id="meihuaDong" placeholder="留空=自動" min="1" max="6">
+                                <small style="color:#888;">用途：變化的關鍵點</small>
                             </div>
                         </div>
                     </div>
@@ -357,9 +365,22 @@
             };
 
             if (includeMeihua) {
-                data.meihua_upper = +document.getElementById('meihuaUpper').value;
-                data.meihua_lower = +document.getElementById('meihuaLower').value;
-                data.meihua_dong = +document.getElementById('meihuaDong').value;
+                // 梅花易數：空值則依系統時間自動起卦
+                const now = new Date();
+                const h = now.getHours();
+                const m = now.getMinutes();
+                const s = now.getSeconds();
+                
+                const upperVal = document.getElementById('meihuaUpper').value;
+                const lowerVal = document.getElementById('meihuaLower').value;
+                const dongVal = document.getElementById('meihuaDong').value;
+                
+                // 上卦：空值則用 (時+分) % 8，結果0視為8
+                data.meihua_upper = upperVal ? +upperVal : ((h + m) % 8 || 8);
+                // 下卦：空值則用 (時+分+秒) % 8，結果0視為8
+                data.meihua_lower = lowerVal ? +lowerVal : ((h + m + s) % 8 || 8);
+                // 動爻：空值則用 (時+分+秒) % 6，結果0視為6
+                data.meihua_dong = dongVal ? +dongVal : ((h + m + s) % 6 || 6);
             }
 
             // 顯示 loading
