@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北斗命數 v2.1 — 完整報告版</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --accent: #ed8936;
+            --bg: #f7fafc;
+            --card: #ffffff;
+            --text: #2d3748;
+            --muted: #718096;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        header p { opacity: 0.9; font-size: 1.1rem; }
+        .version-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+        .card h2 { color: var(--primary); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 1.5rem; }
+        .card h2 span { font-size: 1.8rem; }
+        .form-section { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; }
+        .form-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .form-section h3 { color: var(--secondary); font-size: 1.1rem; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--muted); }
+        .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; min-width: 80px; }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(44,82,130,0.1); }
+        .calendar-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+        }
+        .calendar-toggle label {
+            flex: 1;
+            padding: 14px 20px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+            background: white;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .calendar-toggle label:first-child { border-radius: 8px 0 0 8px; }
+        .calendar-toggle label:last-child { border-radius: 0 8px 8px 0; border-left: none; }
+        .calendar-toggle input:checked + label {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        .calendar-toggle input { display: none; }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; }
+        .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .loading { display: none; text-align: center; padding: 40px; color: var(--muted); }
+        .loading.show { display: block; }
+        .loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 3px solid #e2e8f0; border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; margin-left: 10px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .report-container {
+            display: none;
+            margin-top: 30px;
+        }
+        .report-container.show { display: block; }
+        .report-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+        .report-header h3 { font-size: 1.5rem; margin-bottom: 8px; }
+        .report-content {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 24px;
+            border-radius: 0 0 12px 12px;
+            font-family: "SF Mono", Monaco, "Noto Sans Mono CJK TC", monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .report-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .report-actions button {
+            flex: 1;
+            padding: 12px;
+            font-size: 1rem;
+        }
+        .btn-secondary {
+            background: white;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+        .btn-secondary:hover { background: var(--secondary); color: white; }
+        .disclaimer {
+            margin-top: 40px;
+            padding: 24px;
+            background: linear-gradient(135deg, #fffaf0, #fef3cd);
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid var(--accent);
+        }
+        .disclaimer strong { color: var(--primary); display: block; margin-bottom: 12px; font-size: 1.1rem; }
+        .disclaimer p { color: var(--muted); margin: 6px 0; }
+        footer {
+            margin-top: 40px;
+            padding: 24px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .quick-links a {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .quick-links a:hover { background: rgba(255,255,255,0.3); }
+        @media (max-width: 600px) {
+            .form-row { flex-direction: column; }
+            .form-row .form-group { min-width: 100%; }
+            header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌟 北斗命數</h1>
+        <p>古法是根，場論是枝，用戶是花</p>
+        <span class="version-badge">v2.1 完整報告版</span>
+        <div class="quick-links">
+            <a href="/api/info">API 資訊</a>
+            <a href="/api/v2/field/all">場論資料庫</a>
+            <a href="/docs">API 文檔</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2><span>📊</span> 完整命理分析報告</h2>
+            
+            <form id="reportForm">
+                <!-- 曆法選擇 -->
+                <div class="form-section">
+                    <h3>📅 曆法選擇</h3>
+                    <div class="calendar-toggle">
+                        <input type="radio" name="calendar" id="solar" value="solar" checked>
+                        <label for="solar">🌞 西曆（國曆）</label>
+                        <input type="radio" name="calendar" id="lunar" value="lunar">
+                        <label for="lunar">🌙 農曆</label>
+                    </div>
+                    <div id="leapMonthGroup" class="checkbox-group" style="display:none;">
+                        <input type="checkbox" id="leapMonth">
+                        <label for="leapMonth">是閏月</label>
+                    </div>
+                </div>
+
+                <!-- 出生資料 -->
+                <div class="form-section">
+                    <h3>👤 出生資料</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>年</label>
+                            <input type="number" id="year" value="1990" min="1900" max="2100" required>
+                        </div>
+                        <div class="form-group">
+                            <label>月</label>
+                            <input type="number" id="month" value="6" min="1" max="12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>日</label>
+                            <input type="number" id="day" value="15" min="1" max="31" required>
+                        </div>
+                        <div class="form-group">
+                            <label>時（0-23）</label>
+                            <input type="number" id="hour" value="12" min="0" max="23" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>性別</label>
+                            <select id="gender">
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:2;">
+                            <label>姓名（選填，用於姓名學分析）</label>
+                            <input type="text" id="name" placeholder="例如：楊三興">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 梅花易數（選填）-->
+                <div class="form-section">
+                    <h3>🌸 梅花易數（選填）</h3>
+                    <div class="checkbox-group" style="margin-bottom:16px;">
+                        <input type="checkbox" id="includeMeihua">
+                        <label for="includeMeihua">包含梅花易數分析</label>
+                    </div>
+                    <div id="meihuaFields" style="display:none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>上卦數</label>
+                                <input type="number" id="meihuaUpper" value="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>下卦數</label>
+                                <input type="number" id="meihuaLower" value="2" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>動爻（1-6）</label>
+                                <input type="number" id="meihuaDong" value="1" min="1" max="6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn">🔮 生成完整命理報告</button>
+            </form>
+
+            <div class="loading" id="loading">正在生成報告，請稍候...</div>
+
+            <div class="report-container" id="reportContainer">
+                <div class="report-header">
+                    <h3>🌟 北斗命數分析報告</h3>
+                    <p id="reportMeta"></p>
+                </div>
+                <div class="report-content" id="reportContent"></div>
+                <div class="report-actions">
+                    <button type="button" class="btn-secondary" onclick="copyReport()">📋 複製報告</button>
+                    <button type="button" class="btn-secondary" onclick="downloadReport()">💾 下載報告</button>
+                    <button type="button" onclick="newReport()">🔄 重新分析</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>📐 認識論聲明</strong>
+            <p>術數是個人化決策框架生成器，與天氣預報同構</p>
+            <p>提供機率性參考，不做命定式裁決</p>
+            <p><strong>趨吉避凶——趨和避都是動詞，主語是人</strong></p>
+        </div>
+    </div>
+
+    <footer>
+        北斗命數 v2.1 | 完整報告版 | 建立者：北斗 × 織明<br>
+        框架版本 1.8 | 支援農曆/西曆輸入 | 四術交叉分析
+    </footer>
+
+    <script>
+        const API_BASE = '';
+        let currentReport = '';
+
+        // 曆法切換
+        document.querySelectorAll('input[name="calendar"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('leapMonthGroup').style.display = 
+                    e.target.value === 'lunar' ? 'flex' : 'none';
+            });
+        });
+
+        // 梅花易數切換
+        document.getElementById('includeMeihua').addEventListener('change', (e) => {
+            document.getElementById('meihuaFields').style.display = 
+                e.target.checked ? 'block' : 'none';
+        });
+
+        // 表單提交
+        document.getElementById('reportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const isLunar = document.getElementById('lunar').checked;
+            const includeMeihua = document.getElementById('includeMeihua').checked;
+            
+            const data = {
+                year: +document.getElementById('year').value,
+                month: +document.getElementById('month').value,
+                day: +document.getElementById('day').value,
+                hour: +document.getElementById('hour').value,
+                gender: document.getElementById('gender').value,
+                name: document.getElementById('name').value || null,
+                is_lunar: isLunar,
+                leap_month: isLunar ? document.getElementById('leapMonth').checked : false,
+                include_meihua: includeMeihua,
+            };
+
+            if (includeMeihua) {
+                data.meihua_upper = +document.getElementById('meihuaUpper').value;
+                data.meihua_lower = +document.getElementById('meihuaLower').value;
+                data.meihua_dong = +document.getElementById('meihuaDong').value;
+            }
+
+            // 顯示 loading
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('reportContainer').classList.remove('show');
+
+            try {
+                const response = await fetch(API_BASE + '/api/v2/full-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentReport = result.report_text;
+                    document.getElementById('reportContent').textContent = currentReport;
+                    
+                    const calendarInfo = result.data.calendar_info;
+                    document.getElementById('reportMeta').textContent = 
+                        `${calendarInfo.input_type}：${calendarInfo.input_date} | 生肖：${calendarInfo.shengxiao}`;
+                    
+                    document.getElementById('reportContainer').classList.add('show');
+                } else {
+                    alert('生成失敗：' + (result.detail || '未知錯誤'));
+                }
+            } catch (error) {
+                alert('請求失敗：' + error.message);
+            } finally {
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('loading').classList.remove('show');
+            }
+        });
+
+        // 複製報告
+        function copyReport() {
+            navigator.clipboard.writeText(currentReport).then(() => {
+                alert('報告已複製到剪貼簿！');
+            }).catch(() => {
+                // fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = currentReport;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('報告已複製到剪貼簿！');
+            });
+        }
+
+        // 下載報告
+        function downloadReport() {
+            const name = document.getElementById('name').value || '命理';
+            const date = new Date().toISOString().slice(0,10);
+            const filename = `北斗命數報告_${name}_${date}.txt`;
+            
+            const blob = new Blob([currentReport], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 重新分析
+        function newReport() {
+            document.getElementById('reportContainer').classList.remove('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

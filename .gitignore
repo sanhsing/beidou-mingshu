@@ -1,12 +1,30 @@
-# 北斗命數 .gitignore
-.env
-*.pyc
+# Python
 __pycache__/
-*.db
-data/
-logs/
-backups/
-ssl/*.pem
-ssl/*.key
-.DS_Store
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+.eggs/
+*.egg-info/
+*.egg
+
+# 環境
+.env
+.venv
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
 *.swp
+*.swo
+
+# 系統
+.DS_Store
+Thumbs.db
+
+# 日誌
+*.log
+logs/

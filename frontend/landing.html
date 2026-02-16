@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北斗命數 | 個人化決策框架生成系統</title>
+    <meta name="description" content="北斗命數是個人化決策框架生成系統，整合四術提供機率性參考，不做命定式裁決。古法是根，場論是枝，用戶是花。">
+    <style>
+        :root {
+            --primary: #1e3a5f;
+            --secondary: #2d5a87;
+            --accent: #e67e22;
+            --light: #f8fafc;
+            --dark: #1a202c;
+            --gray: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.8;
+            color: var(--dark);
+            background: var(--light);
+        }
+        
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 100px 20px 80px;
+            text-align: center;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+        
+        .hero h1 { font-size: 3.2rem; margin-bottom: 15px; letter-spacing: 0.15em; }
+        .hero .subtitle { font-size: 1.6rem; opacity: 0.95; margin-bottom: 20px; font-weight: 300; }
+        .hero .tagline { font-size: 1.1rem; opacity: 0.85; max-width: 650px; margin: 0 auto 40px; }
+        
+        .cta-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 16px 45px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(230, 126, 34, 0.4); }
+        
+        /* Sections */
+        section { padding: 70px 20px; }
+        section h2 {
+            font-size: 1.9rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        section h2::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+            margin: 15px auto 0;
+        }
+        
+        /* Core Definition */
+        .definition { background: white; }
+        
+        .def-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 5px solid var(--accent);
+            padding: 35px;
+            border-radius: 0 15px 15px 0;
+            margin-bottom: 40px;
+        }
+        
+        .def-box h3 { color: var(--primary); font-size: 1.4rem; margin-bottom: 15px; }
+        .def-box p { font-size: 1.1rem; color: #78350f; }
+        .def-box strong { background: rgba(255,255,255,0.6); padding: 2px 8px; border-radius: 3px; }
+        
+        .not-is-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) { .not-is-grid { grid-template-columns: 1fr; } }
+        
+        .not-is-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 30px;
+        }
+        
+        .not-is-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .not-is-card.is-card h4 { color: var(--success); }
+        .not-is-card.not-card h4 { color: var(--danger); }
+        
+        .not-is-card ul { list-style: none; }
+        .not-is-card li { padding: 10px 0; padding-left: 30px; position: relative; color: var(--gray); }
+        .is-card li::before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: bold; font-size: 1.1rem; }
+        .not-card li::before { content: "✗"; position: absolute; left: 0; color: var(--danger); font-weight: bold; font-size: 1.1rem; }
+        
+        /* XTF8 */
+        .xtf8 { background: var(--primary); color: white; }
+        .xtf8 h2 { color: white; }
+        .xtf8 h2::after { background: var(--accent); }
+        
+        .xtf8-intro { text-align: center; max-width: 700px; margin: 0 auto 40px; opacity: 0.9; font-size: 1.05rem; }
+        
+        .xtf8-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) { .xtf8-grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        .xtf8-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px 15px;
+            text-align: center;
+        }
+        
+        .xtf8-item .stars { font-size: 1.3rem; color: var(--accent); margin-bottom: 8px; }
+        .xtf8-item .level { font-weight: 600; margin-bottom: 5px; font-size: 0.95rem; }
+        .xtf8-item .desc { font-size: 0.8rem; opacity: 0.75; }
+        
+        /* Features */
+        .features { background: white; }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) { .feature-grid { grid-template-columns: 1fr; } }
+        
+        .feature-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .feature-card .icon { font-size: 2.8rem; margin-bottom: 15px; }
+        .feature-card h4 { color: var(--primary); margin-bottom: 10px; }
+        .feature-card p { color: var(--gray); font-size: 0.9rem; margin-bottom: 12px; }
+        .feature-card .badge { display: inline-block; background: var(--secondary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; }
+        
+        /* Disclaimers */
+        .disclaimers { background: #fef2f2; }
+        
+        .disclaimer-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        @media (max-width: 768px) { .disclaimer-grid { grid-template-columns: 1fr; } }
+        
+        .disclaimer-card {
+            background: white;
+            border-left: 4px solid var(--danger);
+            border-radius: 0 10px 10px 0;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        }
+        
+        .disclaimer-card h4 { color: var(--danger); margin-bottom: 12px; font-size: 1.05rem; }
+        .disclaimer-card p { color: var(--gray); font-size: 0.95rem; }
+        
+        /* Principles */
+        .principles { background: white; }
+        
+        .principle-box {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid var(--success);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .principle-box h3 { color: var(--success); font-size: 1.4rem; margin-bottom: 20px; }
+        .principle-box p { font-size: 1.1rem; color: #065f46; margin-bottom: 25px; }
+        .principle-box .highlight {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: rgba(255,255,255,0.7);
+            padding: 10px 25px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        
+        /* Quote */
+        .quote-section {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            text-align: center;
+            padding: 90px 20px;
+        }
+        
+        .quote { font-size: 1.7rem; font-style: italic; max-width: 750px; margin: 0 auto 25px; line-height: 1.7; }
+        .quote-author { opacity: 0.8; font-size: 1.1rem; }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+        }
+        
+        footer .brand { font-size: 1.6rem; margin-bottom: 10px; }
+        footer .tagline { opacity: 0.7; margin-bottom: 25px; }
+        footer .links { margin-bottom: 25px; }
+        footer .links a { color: var(--accent); text-decoration: none; margin: 0 20px; }
+        footer .links a:hover { text-decoration: underline; }
+        footer .copyright { font-size: 0.85rem; opacity: 0.5; }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">🎯 個人化決策框架生成系統</div>
+            <h1>北斗命數</h1>
+            <p class="subtitle">決策輔助工具，不是命運判決書</p>
+            <p class="tagline">
+                整合八字、紫微、姓名、梅花四術，將傳統術數轉化為現代決策參考框架。<br>
+                提供<strong>機率性參考</strong>，不做<strong>命定式裁決</strong>。
+            </p>
+            <a href="#start" class="cta-btn">開始使用</a>
+        </div>
+    </section>
+    
+    <!-- Core Definition -->
+    <section class="definition">
+        <div class="container">
+            <h2>核心定位</h2>
+            
+            <div class="def-box">
+                <h3>📌 認識論聲明</h3>
+                <p>
+                    術數是<strong>個人化決策框架生成器</strong>，與天氣預報同構——
+                    預報說「明天可能下雨」，你決定要不要帶傘；
+                    命理說「這段時間適合謹慎」，你決定如何行動。
+                    <strong>預測是參考，決策是你的。</strong>
+                </p>
+            </div>
+            
+            <div class="not-is-grid">
+                <div class="not-is-card is-card">
+                    <h4>✅ 北斗命數是</h4>
+                    <ul>
+                        <li>個人化決策框架生成器</li>
+                        <li>自我認識的輔助工具</li>
+                        <li>機率性參考系統</li>
+                        <li>能量傾向的描述模型</li>
+                        <li>傳統智慧的現代詮釋</li>
+                        <li>開放透明的分析工具</li>
+                    </ul>
+                </div>
+                
+                <div class="not-is-card not-card">
+                    <h4>❌ 北斗命數不是</h4>
+                    <ul>
+                        <li>命運預測系統</li>
+                        <li>替代專業諮詢的工具</li>
+                        <li>命定式裁決系統</li>
+                        <li>具體事件的預言</li>
+                        <li>迷信或神秘主義</li>
+                        <li>不透明的黑箱算命</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- XTF8 -->
+    <section class="xtf8">
+        <div class="container">
+            <h2>XTF8 確定度標註</h2>
+            
+            <p class="xtf8-intro">
+                每項分析結果都標註確定程度，讓你清楚知道哪些是可驗證計算、
+                哪些是經驗統計、哪些僅供參考。這是對用戶負責的基本態度。
+            </p>
+            
+            <div class="xtf8-grid">
+                <div class="xtf8-item">
+                    <div class="stars">★★★★★</div>
+                    <div class="level">直接證據</div>
+                    <div class="desc">計算公式<br>可驗證</div>
+                </div>
+                <div class="xtf8-item">
+                    <div class="stars">★★★★☆</div>
+                    <div class="level">強間接</div>
+                    <div class="desc">規則推導<br>有依據</div>
+                </div>
+                <div class="xtf8-item">
+                    <div class="stars">★★★☆☆</div>
+                    <div class="level">弱間接</div>
+                    <div class="desc">經驗統計<br>參考性</div>
+                </div>
+                <div class="xtf8-item">
+                    <div class="stars">★★☆☆☆</div>
+                    <div class="level">推測</div>
+                    <div class="desc">有理據<br>猜測</div>
+                </div>
+                <div class="xtf8-item">
+                    <div class="stars">★☆☆☆☆</div>
+                    <div class="level">假說</div>
+                    <div class="desc">高度<br>不確定</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features -->
+    <section class="features" id="start">
+        <div class="container">
+            <h2>功能模組</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">🔮</div>
+                    <h4>八字分析</h4>
+                    <p>四柱排盤、五行強弱、格局判斷、大運流年</p>
+                    <span class="badge">計算 ★★★★★</span>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">⭐</div>
+                    <h4>紫微斗數</h4>
+                    <p>命盤排盤、十二宮位、四化飛星、大限流年</p>
+                    <span class="badge">計算 ★★★★★</span>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📝</div>
+                    <h4>姓名學</h4>
+                    <p>康熙筆畫、五格分析、三才配置</p>
+                    <span class="badge">規則 ★★★★☆</span>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🌸</div>
+                    <h4>梅花易數</h4>
+                    <p>數字起卦、卦象解讀、動爻分析</p>
+                    <span class="badge">參考 ★★★☆☆</span>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💑</div>
+                    <h4>命盤比對</h4>
+                    <p>合婚、親子、合作契合度評估</p>
+                    <span class="badge">統計 ★★★☆☆</span>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h4>場論翻譯</h4>
+                    <p>傳統術語現代化詮釋</p>
+                    <span class="badge">詮釋 ★★★★☆</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Disclaimers -->
+    <section class="disclaimers">
+        <div class="container">
+            <h2>重要聲明</h2>
+            
+            <div class="disclaimer-grid">
+                <div class="disclaimer-card">
+                    <h4>⚠️ 非預測系統</h4>
+                    <p>不預測具體事件的發生時間、地點或方式。所有分析都是「能量傾向參考」，不是「命運劇本」。</p>
+                </div>
+                <div class="disclaimer-card">
+                    <h4>⚠️ 非專業替代</h4>
+                    <p>不能替代醫療、法律、財務、心理等專業諮詢。重大決策請諮詢相關專業人士。</p>
+                </div>
+                <div class="disclaimer-card">
+                    <h4>⚠️ 非迷信工具</h4>
+                    <p>反對任何形式的命理迷信。術數是思考工具，不是行動指令。保持理性與獨立判斷。</p>
+                </div>
+                <div class="disclaimer-card">
+                    <h4>⚠️ 決策責任</h4>
+                    <p>使用本系統所做的任何決策，責任由使用者自行承擔。我們僅提供資訊參考。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Principles -->
+    <section class="principles">
+        <div class="container">
+            <h2>核心原則</h2>
+            
+            <div class="principle-box">
+                <h3>🌟 用戶主權宣言</h3>
+                <p>
+                    「趨吉避凶」中的「趨」和「避」都是動詞，<br>
+                    主語永遠是<strong>人</strong>，不是命運。
+                </p>
+                <div class="highlight">最終決策權在你手上</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quote -->
+    <section class="quote-section">
+        <div class="container">
+            <p class="quote">
+                「命理分析是決策輔助工具，不是命運判決書。<br>
+                所有分析都是機率性參考，最終決策權在你手上。」
+            </p>
+            <p class="quote-author">— 北斗命數核心理念</p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="brand">🌟 北斗命數</div>
+            <p class="tagline">古法是根，場論是枝，用戶是花</p>
+            <div class="links">
+                <a href="/docs">API 文檔</a>
+                <a href="/api/version">版本資訊</a>
+                <a href="/api/openapi-spec">OpenAPI</a>
+            </div>
+            <p class="copyright">
+                © 2026 北斗命數 | 個人化決策框架生成系統<br>
+                建立者：北斗 × 織明 | XTF8 確定度標註 | v2.4
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,99 +1,48 @@
 #!/bin/bash
-# 北斗命數部署腳本
-# 使用: ./deploy.sh [docker|systemd|dev]
+# 北斗命數 MVP v3.0 一鍵部署腳本
 
-set -e
+echo "=========================================="
+echo "北斗命數 MVP v3.0 部署腳本"
+echo "=========================================="
 
-MODE=${1:-docker}
-PROJECT_DIR=$(cd "$(dirname "$0")" && pwd)
+# 檢查 git
+if ! command -v git &> /dev/null; then
+    echo "❌ 請先安裝 git"
+    exit 1
+fi
 
-echo "================================================"
-echo "北斗命數部署腳本 v2.0"
-echo "模式: $MODE"
-echo "================================================"
+# 檢查是否在 git 倉庫中
+if [ -d ".git" ]; then
+    echo "📦 檢測到現有 Git 倉庫"
+    
+    # 拉取最新
+    echo "📥 拉取最新代碼..."
+    git pull origin main 2>/dev/null || git pull origin master 2>/dev/null
+    
+    # 添加所有更改
+    echo "📝 添加更改..."
+    git add .
+    
+    # 提交
+    echo "💾 提交更改..."
+    git commit -m "升級到 MVP v3.0 - 康熙筆畫庫完整+384爻完整"
+    
+    # 推送
+    echo "🚀 推送到遠端..."
+    git push origin main 2>/dev/null || git push origin master 2>/dev/null
+    
+    echo ""
+    echo "✅ 部署完成！Render 將自動更新。"
+    
+else
+    echo "❌ 未檢測到 Git 倉庫"
+    echo ""
+    echo "請先執行："
+    echo "  git init"
+    echo "  git remote add origin https://github.com/YOUR_USERNAME/beidou-mingshu.git"
+    echo ""
+    echo "或者手動部署到 Render。"
+fi
 
-# 檢查環境
-check_env() {
-    if [ ! -f ".env" ]; then
-        echo "⚠️  .env 文件不存在，從模板創建..."
-        cp .env.template .env
-        echo "⚠️  請編輯 .env 文件設置密鑰！"
-    fi
-}
-
-# Docker 部署
-deploy_docker() {
-    echo "🐳 Docker 部署中..."
-    
-    check_env
-    
-    # 構建映像
-    docker-compose build
-    
-    # 啟動服務
-    docker-compose up -d
-    
-    echo "✅ Docker 部署完成"
-    echo "   訪問: http://localhost:${MINGSHU_PORT:-5000}"
-    echo "   日誌: docker-compose logs -f"
-}
-
-# systemd 部署
-deploy_systemd() {
-    echo "🔧 systemd 部署中..."
-    
-    # 創建用戶
-    if ! id "mingshu" &>/dev/null; then
-        sudo useradd -r -s /bin/false mingshu
-    fi
-    
-    # 創建目錄
-    sudo mkdir -p /opt/mingshu/{data,logs,backups}
-    sudo cp -r . /opt/mingshu/
-    sudo chown -R mingshu:mingshu /opt/mingshu
-    
-    # 創建虛擬環境
-    sudo -u mingshu python3 -m venv /opt/mingshu/venv
-    sudo -u mingshu /opt/mingshu/venv/bin/pip install -r /opt/mingshu/requirements.txt
-    
-    # 安裝服務
-    sudo cp mingshu.service /etc/systemd/system/
-    sudo systemctl daemon-reload
-    sudo systemctl enable mingshu
-    sudo systemctl start mingshu
-    
-    echo "✅ systemd 部署完成"
-    echo "   狀態: sudo systemctl status mingshu"
-    echo "   日誌: sudo journalctl -u mingshu -f"
-}
-
-# 開發模式
-deploy_dev() {
-    echo "🔨 開發模式啟動..."
-    
-    check_env
-    
-    # 安裝依賴
-    pip install -r requirements.txt
-    
-    # 啟動
-    export FLASK_ENV=development
-    python mingshu_api_unified_v2.py --serve 5000
-}
-
-# 主程序
-case $MODE in
-    docker)
-        deploy_docker
-        ;;
-    systemd)
-        deploy_systemd
-        ;;
-    dev)
-        deploy_dev
-        ;;
-    *)
-        echo "用法: ./deploy.sh [docker|systemd|dev]"
-        exit 1
-        ;;
-esac
+echo ""
+echo "=========================================="

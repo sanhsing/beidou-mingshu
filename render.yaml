@@ -1,9 +1,14 @@
+# Render 部署配置
+# 北斗命數 MVP v3.0
+
 services:
   - type: web
     name: beidou-mingshu
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11.0"
+        value: "3.11"
+    healthCheckPath: /api/info
+    autoDeploy: true
