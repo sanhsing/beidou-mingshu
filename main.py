@@ -628,7 +628,16 @@ async def generate_full_report_api(query: FullReportQuery):
         year_gan = bazi["year"][0]
         
         # v2.0 增強：完整八字分析（含五行強弱、格局、神煞）
-        bazi_analysis = full_bazi_analysis(day_master, pillars, year_gan)
+        advanced_analysis = full_bazi_analysis(day_master, pillars, year_gan)
+        
+        # 合併成 report_generator 需要的格式
+        bazi_analysis = {
+            "pillars": pillars,
+            "day_master": day_master,
+            "day_element": GAN_WX.get(day_master, ""),
+            "shishen_analysis": shishen_analysis,
+            **advanced_analysis,  # 包含 strength, geju, shensha
+        }
         
         # 建立紫微 chart_data
         chart_data = {
@@ -642,7 +651,19 @@ async def generate_full_report_api(query: FullReportQuery):
         }
         
         # v2.0 增強：完整紫微分析（含輔星）
-        ziwei_analysis = full_ziwei_analysis(chart_data)
+        advanced_ziwei = full_ziwei_analysis(chart_data)
+        
+        # 合併成 report_generator 需要的格式
+        ziwei_analysis = {
+            "ju_shu": chart.ju_shu,
+            "ming_gong": chart.gongs[chart.ming_gong_idx].name,
+            "ming_stars": chart.gongs[chart.ming_gong_idx].main_stars,
+            "shen_gong": chart.gongs[chart.shen_gong_idx].name,
+            "shen_stars": chart.gongs[chart.shen_gong_idx].main_stars,
+            "sihua": chart.sihua_stars,
+            "gongs": gongs,
+            **advanced_ziwei,  # 包含 fuzhu_analysis
+        }
         
         # 生成 v2.0 報告
         generator = FullReportGenerator()
