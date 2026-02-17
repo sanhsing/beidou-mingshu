@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命名・婚嫁・擇日 | 北斗命數</title>
+    <style>
+        :root {
+            --primary: #1E3A5F;
+            --secondary: #4A90A4;
+            --accent: #E8B85B;
+            --success: #4CAF50;
+            --bg: #FAFAFA;
+            --text: #333;
+            --border: #E0E0E0;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 { font-size: 1.5rem; margin-bottom: 8px; }
+        .header p { opacity: 0.8; font-size: 0.9rem; }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 功能卡片 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .feature-card.active {
+            border-color: var(--primary);
+            background: #F0F7FA;
+        }
+        
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* 表單區 */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: none;
+        }
+        
+        .form-section.active { display: block; }
+        
+        .form-section h2 {
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover { background: #2A4A70; }
+        .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+        
+        /* 結果區 */
+        .result-section {
+            margin-top: 24px;
+            padding: 20px;
+            background: #F8F9FA;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result-section.show { display: block; }
+        
+        .result-title {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        
+        .result-item {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .result-item h4 {
+            color: var(--secondary);
+            margin-bottom: 4px;
+        }
+        
+        .score-bar {
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 4px;
+        }
+        
+        /* 說明 */
+        .info-box {
+            background: #FFF9F0;
+            border-left: 4px solid var(--accent);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+        
+        /* 載入 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* 響應式 */
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>命名・婚嫁・擇日</h1>
+        <p>配合八字，結構優化</p>
+    </div>
+    
+    <div class="container">
+        <!-- 功能選擇 -->
+        <div class="feature-grid">
+            <div class="feature-card" data-form="baby-naming">
+                <h3>👶 新生兒命名</h3>
+                <p>配合八字喜用神，生成適合的名字</p>
+            </div>
+            <div class="feature-card" data-form="rename">
+                <h3>✏️ 改名比對</h3>
+                <p>比較新舊名字的五格吉凶變化</p>
+            </div>
+            <div class="feature-card" data-form="company">
+                <h3>🏢 公司命名</h3>
+                <p>行業配合，數理吉凶分析</p>
+            </div>
+            <div class="feature-card" data-form="marriage-match">
+                <h3>💑 合婚分析</h3>
+                <p>雙盤匹配，五行相容度</p>
+            </div>
+            <div class="feature-card" data-form="marriage-date">
+                <h3>📅 嫁娶擇日</h3>
+                <p>配合雙方八字，尋找吉日良辰</p>
+            </div>
+            <div class="feature-card" data-form="name-analyze">
+                <h3>🔍 姓名分析</h3>
+                <p>五格、三才、總格吉凶</p>
+            </div>
+        </div>
+        
+        <!-- 新生兒命名表單 -->
+        <div class="form-section" id="form-baby-naming">
+            <h2>👶 新生兒命名</h2>
+            <div class="info-box">
+                根據寶寶的出生八字，配合五行喜用神，為您生成適合的名字建議。
+            </div>
+            
+            <div class="form-group">
+                <label>姓氏</label>
+                <input type="text" id="baby-surname" placeholder="例：楊" maxlength="2">
+            </div>
+            
+            <div class="form-group">
+                <label>出生日期</label>
+                <div class="form-row">
+                    <input type="number" id="baby-year" placeholder="年" min="1900" max="2100">
+                    <input type="number" id="baby-month" placeholder="月" min="1" max="12">
+                    <input type="number" id="baby-day" placeholder="日" min="1" max="31">
+                    <input type="number" id="baby-hour" placeholder="時" min="0" max="23">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>性別</label>
+                    <select id="baby-gender">
+                        <option value="M">男</option>
+                        <option value="F">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>曆法</label>
+                    <select id="baby-calendar">
+                        <option value="solar">國曆</option>
+                        <option value="lunar">農曆</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>建議數量</label>
+                    <input type="number" id="baby-count" value="10" min="5" max="30">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="submitBabyNaming()">生成命名建議</button>
+            
+            <div class="result-section" id="result-baby-naming"></div>
+        </div>
+        
+        <!-- 改名比對表單 -->
+        <div class="form-section" id="form-rename">
+            <h2>✏️ 改名比對</h2>
+            <div class="info-box">
+                比較舊名與新名的五格變化，評估改名是否有益。
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>姓氏</label>
+                    <input type="text" id="rename-surname" placeholder="姓" maxlength="2">
+                </div>
+                <div class="form-group">
+                    <label>舊名</label>
+                    <input type="text" id="rename-old" placeholder="舊名" maxlength="3">
+                </div>
+                <div class="form-group">
+                    <label>新名</label>
+                    <input type="text" id="rename-new" placeholder="新名" maxlength="3">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="submitRename()">比對分析</button>
+            
+            <div class="result-section" id="result-rename"></div>
+        </div>
+        
+        <!-- 公司命名表單 -->
+        <div class="form-section" id="form-company">
+            <h2>🏢 公司命名</h2>
+            <div class="info-box">
+                分析公司名的數理吉凶，配合行業五行。
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>公司名 / 基礎概念</label>
+                    <input type="text" id="company-name" placeholder="例：鴻海、虛擾">
+                </div>
+                <div class="form-group">
+                    <label>行業</label>
+                    <select id="company-industry">
+                        <option value="TECH">科技</option>
+                        <option value="FINANCE">金融</option>
+                        <option value="FOOD">餐飲</option>
+                        <option value="RETAIL">零售</option>
+                        <option value="EDUCATION">教育</option>
+                        <option value="HEALTH">健康</option>
+                        <option value="SERVICE">服務</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <button class="btn btn-primary" onclick="submitCompanyAnalyze()">分析</button>
+                <button class="btn btn-primary" onclick="submitCompanySuggest()">生成建議</button>
+            </div>
+            
+            <div class="result-section" id="result-company"></div>
+        </div>
+        
+        <!-- 合婚分析表單 -->
+        <div class="form-section" id="form-marriage-match">
+            <h2>💑 合婚分析</h2>
+            <div class="info-box">
+                分析兩人八字的五行相生相剋、日主互動、整體相容度。
+            </div>
+            
+            <h4 style="margin: 16px 0 8px; color: var(--primary);">男方資料</h4>
+            <div class="form-row">
+                <input type="number" id="match-a-year" placeholder="年" min="1900" max="2100">
+                <input type="number" id="match-a-month" placeholder="月" min="1" max="12">
+                <input type="number" id="match-a-day" placeholder="日" min="1" max="31">
+                <input type="number" id="match-a-hour" placeholder="時" min="0" max="23" value="12">
+            </div>
+            
+            <h4 style="margin: 16px 0 8px; color: var(--primary);">女方資料</h4>
+            <div class="form-row">
+                <input type="number" id="match-b-year" placeholder="年" min="1900" max="2100">
+                <input type="number" id="match-b-month" placeholder="月" min="1" max="12">
+                <input type="number" id="match-b-day" placeholder="日" min="1" max="31">
+                <input type="number" id="match-b-hour" placeholder="時" min="0" max="23" value="12">
+            </div>
+            
+            <button class="btn btn-primary" style="margin-top: 16px;" onclick="submitMarriageMatch()">分析相容度</button>
+            
+            <div class="result-section" id="result-marriage-match"></div>
+        </div>
+        
+        <!-- 嫁娶擇日表單 -->
+        <div class="form-section" id="form-marriage-date">
+            <h2>📅 嫁娶擇日</h2>
+            <div class="info-box">
+                根據雙方八字，在指定時間範圍內尋找適合嫁娶的吉日良辰。
+            </div>
+            
+            <h4 style="margin: 16px 0 8px; color: var(--primary);">男方資料</h4>
+            <div class="form-row">
+                <input type="number" id="date-a-year" placeholder="年">
+                <input type="number" id="date-a-month" placeholder="月">
+                <input type="number" id="date-a-day" placeholder="日">
+                <input type="number" id="date-a-hour" placeholder="時" value="12">
+            </div>
+            
+            <h4 style="margin: 16px 0 8px; color: var(--primary);">女方資料</h4>
+            <div class="form-row">
+                <input type="number" id="date-b-year" placeholder="年">
+                <input type="number" id="date-b-month" placeholder="月">
+                <input type="number" id="date-b-day" placeholder="日">
+                <input type="number" id="date-b-hour" placeholder="時" value="12">
+            </div>
+            
+            <div class="form-row" style="margin-top: 16px;">
+                <div class="form-group">
+                    <label>開始日期</label>
+                    <input type="date" id="date-start">
+                </div>
+                <div class="form-group">
+                    <label>搜索天數</label>
+                    <input type="number" id="date-days" value="90" min="30" max="365">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="submitMarriageDate()">尋找吉日</button>
+            
+            <div class="result-section" id="result-marriage-date"></div>
+        </div>
+        
+        <!-- 姓名分析表單 -->
+        <div class="form-section" id="form-name-analyze">
+            <h2>🔍 姓名分析</h2>
+            <div class="info-box">
+                分析姓名的五格、三才、總格吉凶，可配合八字分析。
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>姓氏</label>
+                    <input type="text" id="analyze-surname" placeholder="姓" maxlength="2">
+                </div>
+                <div class="form-group">
+                    <label>名字</label>
+                    <input type="text" id="analyze-name" placeholder="名" maxlength="3">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="submitNameAnalyze()">分析</button>
+            
+            <div class="result-section" id="result-name-analyze"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 功能切換
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const formId = this.dataset.form;
+                
+                // 切換卡片狀態
+                document.querySelectorAll('.feature-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 切換表單
+                document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+                document.getElementById('form-' + formId).classList.add('active');
+            });
+        });
+        
+        // API 調用
+        async function callAPI(endpoint, data) {
+            try {
+                const response = await fetch('/api/v1/naming' + endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+        
+        function showResult(elementId, content) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = content;
+            el.classList.add('show');
+        }
+        
+        function showLoading(elementId) {
+            showResult(elementId, '<div class="loading">分析中</div>');
+        }
+        
+        // 新生兒命名
+        async function submitBabyNaming() {
+            showLoading('result-baby-naming');
+            
+            const data = {
+                surname: document.getElementById('baby-surname').value,
+                birth_info: {
+                    year: parseInt(document.getElementById('baby-year').value),
+                    month: parseInt(document.getElementById('baby-month').value),
+                    day: parseInt(document.getElementById('baby-day').value),
+                    hour: parseInt(document.getElementById('baby-hour').value) || 12,
+                    gender: document.getElementById('baby-gender').value,
+                    calendar: document.getElementById('baby-calendar').value
+                },
+                gender: document.getElementById('baby-gender').value,
+                count: parseInt(document.getElementById('baby-count').value) || 10
+            };
+            
+            const result = await callAPI('/baby', data);
+            
+            if (result.success && result.data) {
+                let html = '<div class="result-title">命名建議</div>';
+                result.data.forEach((item, i) => {
+                    html += `<div class="result-item">
+                        <h4>${i+1}. ${data.surname}${item.name || item.given_name}</h4>
+                        <p>總格：${item.total_stroke || '—'} | 評分：${item.score || '—'}</p>
+                        ${item.reason ? `<p style="color:#666;">${item.reason}</p>` : ''}
+                    </div>`;
+                });
+                showResult('result-baby-naming', html);
+            } else {
+                showResult('result-baby-naming', `<p style="color:red;">錯誤：${result.error || result.detail || '請檢查輸入'}</p>`);
+            }
+        }
+        
+        // 改名比對
+        async function submitRename() {
+            showLoading('result-rename');
+            
+            const data = {
+                surname: document.getElementById('rename-surname').value,
+                old_name: document.getElementById('rename-old').value,
+                new_name: document.getElementById('rename-new').value
+            };
+            
+            const result = await callAPI('/rename', data);
+            
+            if (result.success) {
+                let html = '<div class="result-title">改名比對結果</div>';
+                html += `<div class="result-item">
+                    <p>舊名：${data.surname}${data.old_name}</p>
+                    <p>新名：${data.surname}${data.new_name}</p>
+                    <p>建議：${result.data?.recommendation || '分析完成'}</p>
+                </div>`;
+                showResult('result-rename', html);
+            } else {
+                showResult('result-rename', `<p style="color:red;">錯誤：${result.error || result.detail}</p>`);
+            }
+        }
+        
+        // 公司名分析
+        async function submitCompanyAnalyze() {
+            showLoading('result-company');
+            
+            const data = {
+                company_name: document.getElementById('company-name').value,
+                industry: document.getElementById('company-industry').value
+            };
+            
+            const result = await callAPI('/company/analyze', data);
+            
+            if (result.success) {
+                let html = '<div class="result-title">公司名分析</div>';
+                html += `<div class="result-item">
+                    <h4>${data.company_name}</h4>
+                    <p>總筆畫：${result.data?.total_stroke || '—'}</p>
+                    <p>數理：${result.data?.shuli || '—'}</p>
+                    <p>吉凶：${result.data?.jixiong || '待分析'}</p>
+                </div>`;
+                showResult('result-company', html);
+            } else {
+                showResult('result-company', `<p style="color:red;">錯誤：${result.error || result.detail}</p>`);
+            }
+        }
+        
+        // 公司名建議
+        async function submitCompanySuggest() {
+            showLoading('result-company');
+            
+            const data = {
+                base_name: document.getElementById('company-name').value,
+                industry: document.getElementById('company-industry').value,
+                count: 5
+            };
+            
+            const result = await callAPI('/company/suggest', data);
+            
+            if (result.success && result.data) {
+                let html = '<div class="result-title">公司名建議</div>';
+                result.data.forEach((item, i) => {
+                    html += `<div class="result-item">
+                        <h4>${i+1}. ${typeof item === 'string' ? item : item.name}</h4>
+                    </div>`;
+                });
+                showResult('result-company', html);
+            } else {
+                showResult('result-company', `<p style="color:red;">錯誤：${result.error || result.detail}</p>`);
+            }
+        }
+        
+        // 合婚分析
+        async function submitMarriageMatch() {
+            showLoading('result-marriage-match');
+            
+            const data = {
+                person_a: {
+                    year: parseInt(document.getElementById('match-a-year').value),
+                    month: parseInt(document.getElementById('match-a-month').value),
+                    day: parseInt(document.getElementById('match-a-day').value),
+                    hour: parseInt(document.getElementById('match-a-hour').value) || 12,
+                    gender: 'M',
+                    calendar: 'solar'
+                },
+                person_b: {
+                    year: parseInt(document.getElementById('match-b-year').value),
+                    month: parseInt(document.getElementById('match-b-month').value),
+                    day: parseInt(document.getElementById('match-b-day').value),
+                    hour: parseInt(document.getElementById('match-b-hour').value) || 12,
+                    gender: 'F',
+                    calendar: 'solar'
+                }
+            };
+            
+            const result = await callAPI('/marriage/match', data);
+            
+            if (result.success) {
+                let html = '<div class="result-title">合婚分析結果</div>';
+                html += `<div class="result-item">
+                    <h4>相容度：${result.data?.compatibility_score || result.data?.score || '—'}%</h4>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${result.data?.compatibility_score || result.data?.score || 50}%"></div>
+                    </div>
+                    <p style="margin-top: 12px;">${result.data?.summary || result.data?.analysis || '分析完成'}</p>
+                </div>`;
+                showResult('result-marriage-match', html);
+            } else {
+                showResult('result-marriage-match', `<p style="color:red;">錯誤：${result.error || result.detail}</p>`);
+            }
+        }
+        
+        // 嫁娶擇日
+        async function submitMarriageDate() {
+            showLoading('result-marriage-date');
+            
+            const data = {
+                person_a: {
+                    year: parseInt(document.getElementById('date-a-year').value),
+                    month: parseInt(document.getElementById('date-a-month').value),
+                    day: parseInt(document.getElementById('date-a-day').value),
+                    hour: parseInt(document.getElementById('date-a-hour').value) || 12,
+                    gender: 'M',
+                    calendar: 'solar'
+                },
+                person_b: {
+                    year: parseInt(document.getElementById('date-b-year').value),
+                    month: parseInt(document.getElementById('date-b-month').value),
+                    day: parseInt(document.getElementById('date-b-day').value),
+                    hour: parseInt(document.getElementById('date-b-hour').value) || 12,
+                    gender: 'F',
+                    calendar: 'solar'
+                },
+                start_date: document.getElementById('date-start').value || null,
+                days: parseInt(document.getElementById('date-days').value) || 90
+            };
+            
+            const result = await callAPI('/marriage/date', data);
+            
+            if (result.success && result.data) {
+                let html = '<div class="result-title">嫁娶吉日</div>';
+                if (result.data.length === 0) {
+                    html += '<p>在指定範圍內未找到特別適合的日期，建議擴大搜索範圍。</p>';
+                } else {
+                    result.data.slice(0, 10).forEach((item, i) => {
+                        html += `<div class="result-item">
+                            <h4>${i+1}. ${item.date || item.solar_date}</h4>
+                            <p>農曆：${item.lunar_date || '—'}</p>
+                            <p>宜忌：${item.yiji || item.suitable || '—'}</p>
+                            <p>評分：${item.score || '—'}</p>
+                        </div>`;
+                    });
+                }
+                showResult('result-marriage-date', html);
+            } else {
+                showResult('result-marriage-date', `<p style="color:red;">錯誤：${result.error || result.detail}</p>`);
+            }
+        }
+        
+        // 姓名分析
+        async function submitNameAnalyze() {
+            showLoading('result-name-analyze');
+            
+            const data = {
+                surname: document.getElementById('analyze-surname').value,
+                given_name: document.getElementById('analyze-name').value
+            };
+            
+            const result = await callAPI('/analyze', data);
+            
+            if (result.success) {
+                let html = '<div class="result-title">姓名分析結果</div>';
+                html += `<div class="result-item">
+                    <h4>${data.surname}${data.given_name}</h4>
+                    <p>天格：${result.data?.tian_ge || '—'}</p>
+                    <p>人格：${result.data?.ren_ge || '—'}</p>
+                    <p>地格：${result.data?.di_ge || '—'}</p>
+                    <p>外格：${result.data?.wai_ge || '—'}</p>
+                    <p>總格：${result.data?.zong_ge || '—'}</p>
+                </div>`;
+                showResult('result-name-analyze', html);
+            } else {
+                showResult('result-name-analyze', `<p style="color:red;">錯誤：${result.error || result.detail}</p>`);
+            }
+        }
+        
+        // 預設日期
+        document.getElementById('date-start').value = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>

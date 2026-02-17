@@ -605,9 +605,13 @@ class FullReportGenerator:
         return content
 
     def generate_fortune_section(self, birth: 'BirthData', bazi: Dict, ziwei: Dict) -> str:
-        """生成大運流年分析區塊 v2.3"""
+        """生成大運流年分析區塊 v3.0.4 修正"""
         if not FORTUNE_LOADED:
             return "\n【大運流年分析】\n（大運流年模組未載入）\n"
+        
+        # v3.0.4: 空值防護
+        if not bazi:
+            return "\n【大運流年分析】\n（八字資料缺失，無法分析）\n"
         
         content = """
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -615,30 +619,61 @@ class FullReportGenerator:
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 """
         
-        # 取得必要資料
-        year_gan = bazi.get("year", [""])[0] if isinstance(bazi.get("year"), list) else bazi.get("year", "")[:1]
-        month_ganzhi = bazi.get("month", "") if isinstance(bazi.get("month"), str) else "".join(bazi.get("month", ["", ""]))
-        day_master = bazi.get("day_master", "")
-        
-        # 構建四柱字典
-        pillars = {}
-        for p in ["year", "month", "day", "hour"]:
-            val = bazi.get(p, "")
+        # v3.0.4: 安全取值函數
+        def safe_get_char(val, idx, default=""):
+            """安全取得字串或列表中的字元"""
+            if not val:
+                return default
             if isinstance(val, list):
-                pillars[p] = "".join(val)
-            else:
-                pillars[p] = val
-        
-        # 紫微資料
-        ju_shu = ziwei.get("ju_shu", "")
-        ming_gong_idx = ziwei.get("ming_gong_idx", 0)
-        
-        # 判斷身強身弱
-        is_strong = bazi.get("strength_level", "") in ["極強", "偏強", "中和偏強"]
-        
-        current_year = datetime.now().year
+                return val[idx] if len(val) > idx else default
+            if isinstance(val, str):
+                return val[idx] if len(val) > idx else default
+            return default
         
         try:
+            # v3.0.4: 安全取得必要資料
+            year_val = bazi.get("year", "") or bazi.get("pillars", {}).get("year", "")
+            year_gan = safe_get_char(year_val, 0, "")
+            
+            month_val = bazi.get("month", "") or bazi.get("pillars", {}).get("month", "")
+            if isinstance(month_val, list):
+                month_ganzhi = "".join(month_val) if month_val else ""
+            else:
+                month_ganzhi = month_val or ""
+            
+            day_master = bazi.get("day_master", "")
+            
+            # v3.0.4: 優先使用 bazi["pillars"]，其次拼湊
+            if bazi.get("pillars"):
+                pillars = bazi["pillars"]
+            else:
+                pillars = {}
+                for p in ["year", "month", "day", "hour"]:
+                    val = bazi.get(p, "")
+                    if isinstance(val, list):
+                        pillars[p] = "".join(val) if val else ""
+                    else:
+                        pillars[p] = val or ""
+            
+            # v3.0.4: 檢查必要資料是否存在
+            if not day_master:
+                return content + "\n（日主資料缺失，無法分析流年）\n"
+            
+            if not year_gan:
+                return content + "\n（年柱資料缺失，無法分析大運）\n"
+            
+            # 紫微資料
+            ju_shu = ziwei.get("ju_shu", "") if ziwei else ""
+            ming_gong_idx = ziwei.get("ming_gong_idx", 0) if ziwei else 0
+            
+            # 判斷身強身弱
+            strength_level = bazi.get("strength_level", "")
+            if not strength_level and bazi.get("strength"):
+                strength_level = bazi.get("strength", {}).get("strength_level", "")
+            is_strong = strength_level in ["極強", "偏強", "中和偏強"]
+            
+            current_year = datetime.now().year
+            
             # 八字大運
             if year_gan and month_ganzhi:
                 dayun_result = calculate_dayun(

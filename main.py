@@ -71,6 +71,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ===== v3.1.1: 回饋系統 =====
+try:
+    from feedback_api import register_feedback_routes
+    register_feedback_routes(app)
+except ImportError as e:
+    print(f"⚠️ 回饋系統未載入: {e}")
+
+# ===== v3.1.2: 命名婚嫁系統 =====
+try:
+    from naming_marriage_api import register_naming_routes
+    register_naming_routes(app)
+except ImportError as e:
+    print(f"⚠️ 命名婚嫁系統未載入: {e}")
+
 # ===== 資料模型 =====
 class BirthInfo(BaseModel):
     year: int = Field(..., ge=1900, le=2100)
@@ -118,23 +132,70 @@ class APIResponse(BaseModel):
 # ===== 農曆轉西曆輔助函數 =====
 
 def full_bazi_analysis(day_master: str, pillars: dict, year_gan: str) -> dict:
-    """完整八字分析（含五行強弱、格局、神煞）"""
+    """完整八字分析（含五行強弱、格局、神煞）v3.0.4 修正"""
     try:
         from wuxing_analyzer import analyze_wuxing_strength
         from geju_analyzer import analyze_geju
         from shensha_translation import find_shensha
+        from wuxing_core import GAN_WX, ten_god_field
         
+        # 基礎分析
         strength = analyze_wuxing_strength(day_master, pillars)
         geju = analyze_geju(day_master, pillars)
         shensha = find_shensha(day_master, pillars)
         
+        # v3.0.4: 補充十神分析
+        shishen_analysis = []
+        for pillar_name, pillar in [("年", pillars.get("year", "")), 
+                                     ("月", pillars.get("month", "")), 
+                                     ("時", pillars.get("hour", ""))]:
+            if pillar and len(pillar) >= 1:
+                gan = pillar[0]
+                god_info = ten_god_field(day_master, gan)
+                shishen_analysis.append({"pillar": pillar_name, "gan": gan, **god_info})
+        
+        # v3.0.4: 計算五行分布
+        ZHI_WX = {
+            "子": "水", "丑": "土", "寅": "木", "卯": "木", 
+            "辰": "土", "巳": "火", "午": "火", "未": "土",
+            "申": "金", "酉": "金", "戌": "土", "亥": "水"
+        }
+        
+        wuxing_count = {"木": 0, "火": 0, "土": 0, "金": 0, "水": 0}
+        for p_name, p_val in pillars.items():
+            if p_val and len(p_val) >= 1:
+                gan_wx = GAN_WX.get(p_val[0], "")
+                if gan_wx in wuxing_count:
+                    wuxing_count[gan_wx] += 1
+            if p_val and len(p_val) >= 2:
+                zhi_wx = ZHI_WX.get(p_val[1], "")
+                if zhi_wx in wuxing_count:
+                    wuxing_count[zhi_wx] += 1
+        
+        # v3.0.4: 返回完整結構
         return {
+            "day_master": day_master,
+            "day_element": GAN_WX.get(day_master, ""),
+            "pillars": pillars,
+            "shishen_analysis": shishen_analysis,
+            "wuxing_count": wuxing_count,
             "strength": strength,
             "geju": geju,
             "shensha": shensha,
         }
     except Exception as e:
-        return {"error": str(e)}
+        import traceback
+        return {
+            "day_master": day_master,
+            "day_element": "",
+            "pillars": pillars,
+            "shishen_analysis": [],
+            "wuxing_count": {"木": 0, "火": 0, "土": 0, "金": 0, "水": 0},
+            "strength": {},
+            "geju": {},
+            "shensha": [],
+            "error": str(e),
+        }
 
 def full_ziwei_analysis(chart_data: dict) -> dict:
     """完整紫微分析（含四化、輔星）"""
@@ -258,6 +319,11 @@ def convert_to_solar(info: BirthInfo) -> tuple:
 @app.get("/", response_class=HTMLResponse)
 async def root():
     return FileResponse("frontend/index.html")
+
+@app.get("/naming", response_class=HTMLResponse)
+async def naming_page():
+    """命名・婚嫁・擇日 頁面"""
+    return FileResponse("frontend/naming.html")
 
 @app.get("/health")
 async def health():

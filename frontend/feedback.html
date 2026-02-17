@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>內測回饋 | 北斗命數</title>
+    <style>
+        :root {
+            --primary: #1E3A5F;
+            --secondary: #4A90A4;
+            --accent: #E8B85B;
+            --bg: #FAFAFA;
+            --text: #333333;
+            --border: #E0E0E0;
+            --success: #4CAF50;
+            --error: #F44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* 標題區 */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .header .brand {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 16px;
+        }
+        
+        /* 表單卡片 */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        
+        .form-card h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-card h2 .emoji {
+            font-size: 1.3rem;
+        }
+        
+        .form-card .purpose {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 16px;
+            padding-left: 28px;
+        }
+        
+        /* 輸入框 */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        
+        .form-group textarea::placeholder {
+            color: #aaa;
+        }
+        
+        /* 選擇題 */
+        .choice-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .choice-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .choice-btn:hover {
+            border-color: var(--secondary);
+            background: #F0F7FA;
+        }
+        
+        .choice-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .choice-btn input {
+            display: none;
+        }
+        
+        /* 評分 */
+        .rating-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .rating-btn {
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .rating-btn:hover {
+            border-color: var(--accent);
+            background: #FFF9F0;
+        }
+        
+        .rating-btn.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        /* 提交按鈕 */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .submit-btn:hover {
+            background: #2A4A70;
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        /* 成功訊息 */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-message .icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+        
+        .success-message h2 {
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+        
+        .success-message p {
+            color: #666;
+        }
+        
+        /* 分隔線 */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 24px 0;
+        }
+        
+        /* 隱藏欄位標籤 */
+        .optional-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: #888;
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        
+        /* 錯誤提示 */
+        .error-msg {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+        }
+        
+        /* 載入中 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 響應式 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            .form-card {
+                padding: 24px 20px;
+            }
+            
+            .choice-group {
+                flex-direction: column;
+            }
+            
+            .choice-btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 標題 -->
+        <div class="header">
+            <h1>內測回饋</h1>
+            <p class="subtitle">感謝你的參與，你的回饋將幫助我們優化服務</p>
+            <span class="brand">北斗命數</span>
+        </div>
+        
+        <!-- 表單 -->
+        <form id="feedbackForm">
+            <!-- 基本資訊 -->
+            <div class="form-card">
+                <div class="form-group">
+                    <label>你的稱呼 <span class="optional-label">可匿名</span></label>
+                    <input type="text" id="clientName" placeholder="如不填寫將以匿名方式提交" 
+                           style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font-size:1rem;">
+                </div>
+                
+                <div class="form-group">
+                    <label>服務類型</label>
+                    <div class="choice-group" id="serviceLevel">
+                        <label class="choice-btn">
+                            <input type="radio" name="serviceLevel" value="L1">
+                            L1 入門版
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="serviceLevel" value="L2">
+                            L2 進階版
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="serviceLevel" value="L3">
+                            L3 顧問版
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="serviceLevel" value="內測">
+                            內測體驗
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 核心問題 1 -->
+            <div class="form-card">
+                <h2><span class="emoji">💬</span> 問題 1</h2>
+                <p class="purpose">測試模型是否留下記憶點</p>
+                <div class="form-group">
+                    <label>你今天最有感的一句話是什麼？</label>
+                    <textarea id="mostImpactful" 
+                              placeholder="請分享在諮詢過程中，讓你印象最深刻的一句話或觀點..."
+                              required></textarea>
+                </div>
+            </div>
+            
+            <!-- 核心問題 2 -->
+            <div class="form-card">
+                <h2><span class="emoji">💡</span> 問題 2</h2>
+                <p class="purpose">測試結構是否產生新認知</p>
+                <div class="form-group">
+                    <label>有沒有哪個部分讓你第一次用不同角度理解自己？</label>
+                    <textarea id="newPerspective" 
+                              placeholder="例如：原來我的能量是這樣流動的、原來這就是我卡住的原因..."
+                              required></textarea>
+                </div>
+            </div>
+            
+            <!-- 核心問題 3 -->
+            <div class="form-card">
+                <h2><span class="emoji">🔧</span> 問題 3</h2>
+                <p class="purpose">幫助我們改進服務</p>
+                <div class="form-group">
+                    <label>如果今天的內容可以改進，你覺得哪裡最模糊？</label>
+                    <textarea id="improvement" 
+                              placeholder="例如：五行的部分有點抽象、關係分析可以更具體..."
+                              required></textarea>
+                </div>
+            </div>
+            
+            <!-- 可選問題 -->
+            <div class="form-card">
+                <h2><span class="emoji">📊</span> 整體評價 <span class="optional-label">選填</span></h2>
+                
+                <div class="form-group">
+                    <label>你是否願意再談一次？</label>
+                    <div class="choice-group" id="wouldReturn">
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldReturn" value="非常願意">
+                            非常願意
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldReturn" value="願意">
+                            願意
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldReturn" value="考慮中">
+                            考慮中
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldReturn" value="不需要">
+                            不需要
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="form-group">
+                    <label>你是否願意推薦給朋友？</label>
+                    <div class="choice-group" id="wouldRecommend">
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldRecommend" value="非常願意">
+                            非常願意
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldRecommend" value="願意">
+                            願意
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldRecommend" value="考慮中">
+                            考慮中
+                        </label>
+                        <label class="choice-btn">
+                            <input type="radio" name="wouldRecommend" value="不會">
+                            不會
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="form-group">
+                    <label>整體滿意度</label>
+                    <div class="rating-group" id="overallRating">
+                        <button type="button" class="rating-btn" data-value="1">1</button>
+                        <button type="button" class="rating-btn" data-value="2">2</button>
+                        <button type="button" class="rating-btn" data-value="3">3</button>
+                        <button type="button" class="rating-btn" data-value="4">4</button>
+                        <button type="button" class="rating-btn" data-value="5">5</button>
+                    </div>
+                    <p style="font-size:0.85rem; color:#888; margin-top:8px;">1 = 不滿意，5 = 非常滿意</p>
+                </div>
+            </div>
+            
+            <!-- 提交 -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                提交回饋
+            </button>
+            <p class="error-msg" id="errorMsg"></p>
+        </form>
+        
+        <!-- 成功訊息 -->
+        <div class="success-message" id="successMessage">
+            <div class="icon">✅</div>
+            <h2>感謝你的回饋！</h2>
+            <p>你的意見對我們非常重要。</p>
+            <p style="margin-top:24px; color:#888; font-size:0.9rem;">
+                「結構決定阻力，人決定方向。」
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // 選擇按鈕邏輯
+        document.querySelectorAll('.choice-group').forEach(group => {
+            group.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    group.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                });
+            });
+        });
+        
+        // 評分按鈕邏輯
+        let selectedRating = 0;
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedRating = parseInt(this.dataset.value);
+            });
+        });
+        
+        // 表單提交
+        document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            
+            // 收集數據
+            const data = {
+                client_name: document.getElementById('clientName').value || '匿名',
+                service_level: document.querySelector('input[name="serviceLevel"]:checked')?.value || '',
+                most_impactful: document.getElementById('mostImpactful').value,
+                new_perspective: document.getElementById('newPerspective').value,
+                improvement: document.getElementById('improvement').value,
+                would_return: document.querySelector('input[name="wouldReturn"]:checked')?.value || '',
+                would_recommend: document.querySelector('input[name="wouldRecommend"]:checked')?.value || '',
+                overall_rating: selectedRating,
+            };
+            
+            // 驗證必填
+            if (!data.most_impactful || !data.new_perspective || !data.improvement) {
+                errorMsg.textContent = '請填寫所有必填問題';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            // 提交
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> 提交中...';
+            errorMsg.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/v1/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // 成功
+                    document.getElementById('feedbackForm').style.display = 'none';
+                    document.getElementById('successMessage').classList.add('show');
+                } else {
+                    throw new Error(result.detail || '提交失敗');
+                }
+            } catch (err) {
+                errorMsg.textContent = '提交失敗：' + err.message;
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '提交回饋';
+            }
+        });
+    </script>
+</body>
+</html>
