@@ -1,0 +1,603 @@
+{
+  "meta": {
+    "project": "北斗命數 SaaS",
+    "version": "1.0.0",
+    "created": "2026-02-17",
+    "method": "XTF8 消-拓-融 | XTFS 四塔 | @11星",
+    "total_tasks": 48,
+    "completed": 45,
+    "pending": 3
+  },
+  "domains": {
+    "L": "法務文件 (Legal)",
+    "F": "前端頁面 (Frontend)",
+    "A": "後端API (API)",
+    "P": "商業閉環 (Payment)"
+  },
+  "tasks": [
+    {
+      "id": "L01",
+      "domain": "L",
+      "name": "隱私政策",
+      "file": "legal/privacy.md",
+      "lines": 74,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@澄書"
+    },
+    {
+      "id": "L02",
+      "domain": "L",
+      "name": "服務條款",
+      "file": "legal/terms.md",
+      "lines": 65,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@澄書"
+    },
+    {
+      "id": "L03",
+      "domain": "L",
+      "name": "退款政策",
+      "file": "legal/refund.md",
+      "lines": 35,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@澄書"
+    },
+    {
+      "id": "L04",
+      "domain": "L",
+      "name": "免責聲明",
+      "file": "legal/disclaimer.md",
+      "lines": 45,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@澄書"
+    },
+    {
+      "id": "L05",
+      "domain": "L",
+      "name": "Cookie政策",
+      "file": "legal/cookie.md",
+      "lines": 77,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@澄書"
+    },
+    {
+      "id": "L06",
+      "domain": "L",
+      "name": "法務路由",
+      "file": "legal_routes.py",
+      "lines": 85,
+      "status": "done",
+      "deps": [
+        "L01",
+        "L02",
+        "L03",
+        "L04",
+        "L05"
+      ],
+      "exec": "serial",
+      "star": "@星殼"
+    },
+    {
+      "id": "F01",
+      "domain": "F",
+      "name": "落地頁",
+      "file": "landing_page.py",
+      "lines": 320,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@璃語"
+    },
+    {
+      "id": "F02",
+      "domain": "F",
+      "name": "免費試算頁",
+      "file": "free_trial.py",
+      "lines": 275,
+      "status": "done",
+      "deps": [
+        "A05"
+      ],
+      "exec": "serial",
+      "star": "@璃語"
+    },
+    {
+      "id": "F03",
+      "domain": "F",
+      "name": "定價頁",
+      "file": "pricing_page.py",
+      "lines": 240,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@璃語"
+    },
+    {
+      "id": "F04",
+      "domain": "F",
+      "name": "儀表板",
+      "file": "dashboard_v2.py",
+      "lines": 252,
+      "status": "done",
+      "deps": [
+        "A01"
+      ],
+      "exec": "serial",
+      "star": "@璃語"
+    },
+    {
+      "id": "F05",
+      "domain": "F",
+      "name": "購買頁",
+      "file": "checkout.py",
+      "lines": 394,
+      "status": "done",
+      "deps": [
+        "P01"
+      ],
+      "exec": "serial",
+      "star": "@璃語"
+    },
+    {
+      "id": "F06",
+      "domain": "F",
+      "name": "會員管理頁",
+      "file": "membership_page.py",
+      "lines": 294,
+      "status": "done",
+      "deps": [
+        "P04"
+      ],
+      "exec": "serial",
+      "star": "@璃語"
+    },
+    {
+      "id": "F07",
+      "domain": "F",
+      "name": "合婚配對頁",
+      "file": "matching_page.py",
+      "lines": 408,
+      "status": "done",
+      "deps": [
+        "A06"
+      ],
+      "exec": "serial",
+      "star": "@璃語"
+    },
+    {
+      "id": "F08",
+      "domain": "F",
+      "name": "FAQ頁面",
+      "file": "faq_page.py",
+      "lines": 107,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@璃語"
+    },
+    {
+      "id": "F09",
+      "domain": "F",
+      "name": "報告美化樣式",
+      "file": "report_styles.py",
+      "lines": 227,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@璃語"
+    },
+    {
+      "id": "F10",
+      "domain": "F",
+      "name": "報告圖表",
+      "file": "report_charts.py",
+      "lines": 212,
+      "status": "done",
+      "deps": [
+        "F09"
+      ],
+      "exec": "serial",
+      "star": "@理樞"
+    },
+    {
+      "id": "A01",
+      "domain": "A",
+      "name": "JWT認證",
+      "file": "auth_jwt.py",
+      "lines": 200,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@星殼"
+    },
+    {
+      "id": "A02",
+      "domain": "A",
+      "name": "健康檢查",
+      "file": "health_check.py",
+      "lines": 50,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@星殼"
+    },
+    {
+      "id": "A03",
+      "domain": "A",
+      "name": "監控追蹤",
+      "file": "monitoring.py",
+      "lines": 216,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@理樞"
+    },
+    {
+      "id": "A04",
+      "domain": "A",
+      "name": "八字核心",
+      "file": "bazi_base.py",
+      "lines": 300,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@理樞"
+    },
+    {
+      "id": "A05",
+      "domain": "A",
+      "name": "免費八字API",
+      "file": "bazi_free.py",
+      "lines": 120,
+      "status": "done",
+      "deps": [
+        "A04"
+      ],
+      "exec": "serial",
+      "star": "@理樞"
+    },
+    {
+      "id": "A06",
+      "domain": "A",
+      "name": "合婚API",
+      "file": "relation_match.py",
+      "lines": 250,
+      "status": "done",
+      "deps": [
+        "A04"
+      ],
+      "exec": "serial",
+      "star": "@理樞"
+    },
+    {
+      "id": "A07",
+      "domain": "A",
+      "name": "統一數據庫",
+      "file": "db_unified.py",
+      "lines": 300,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@星殼"
+    },
+    {
+      "id": "A08",
+      "domain": "A",
+      "name": "Email服務",
+      "file": "email_service.py",
+      "lines": 143,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@流祇"
+    },
+    {
+      "id": "A09",
+      "domain": "A",
+      "name": "配置管理",
+      "file": "config.py",
+      "lines": 150,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@星殼"
+    },
+    {
+      "id": "P01",
+      "domain": "P",
+      "name": "商品定義",
+      "file": "checkout.py:PRODUCTS",
+      "lines": 50,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@織明"
+    },
+    {
+      "id": "P02",
+      "domain": "P",
+      "name": "訂單服務",
+      "file": "payment_flow.py:OrderService",
+      "lines": 120,
+      "status": "done",
+      "deps": [
+        "A07"
+      ],
+      "exec": "serial",
+      "star": "@星殼"
+    },
+    {
+      "id": "P03",
+      "domain": "P",
+      "name": "綠界整合",
+      "file": "payment_flow.py:ECPayService",
+      "lines": 150,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@星殼"
+    },
+    {
+      "id": "P04",
+      "domain": "P",
+      "name": "會員服務",
+      "file": "membership_service.py",
+      "lines": 255,
+      "status": "done",
+      "deps": [
+        "A07"
+      ],
+      "exec": "serial",
+      "star": "@織明"
+    },
+    {
+      "id": "P05",
+      "domain": "P",
+      "name": "點數服務",
+      "file": "payment_flow.py:CreditsService",
+      "lines": 80,
+      "status": "done",
+      "deps": [
+        "A07"
+      ],
+      "exec": "serial",
+      "star": "@星殼"
+    },
+    {
+      "id": "P06",
+      "domain": "P",
+      "name": "支付回調",
+      "file": "credits_api.py:payment_notify",
+      "lines": 60,
+      "status": "done",
+      "deps": [
+        "P02",
+        "P03",
+        "P05"
+      ],
+      "exec": "serial",
+      "star": "@星殼"
+    },
+    {
+      "id": "P07",
+      "domain": "P",
+      "name": "點數API",
+      "file": "credits_api.py",
+      "lines": 331,
+      "status": "done",
+      "deps": [
+        "P05",
+        "P06"
+      ],
+      "exec": "serial",
+      "star": "@星殼"
+    },
+    {
+      "id": "P08",
+      "domain": "P",
+      "name": "支付結果頁",
+      "file": "credits_api.py:payment_return",
+      "lines": 80,
+      "status": "done",
+      "deps": [
+        "P06"
+      ],
+      "exec": "serial",
+      "star": "@璃語"
+    },
+    {
+      "id": "D01",
+      "domain": "D",
+      "name": "備份服務",
+      "file": "deploy/backup.py",
+      "lines": 280,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@星殼"
+    },
+    {
+      "id": "D02",
+      "domain": "D",
+      "name": "測試工具",
+      "file": "deploy/test_all.py",
+      "lines": 397,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@理樞"
+    },
+    {
+      "id": "D03",
+      "domain": "D",
+      "name": "部署配置",
+      "file": "deploy/deploy.py",
+      "lines": 480,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@星殼"
+    },
+    {
+      "id": "D04",
+      "domain": "D",
+      "name": "上線檢查",
+      "file": "deploy/launch.py",
+      "lines": 363,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@織明"
+    },
+    {
+      "id": "D05",
+      "domain": "D",
+      "name": "流程整合",
+      "file": "deploy/pipeline.py",
+      "lines": 547,
+      "status": "done",
+      "deps": [
+        "D01",
+        "D02",
+        "D03",
+        "D04"
+      ],
+      "exec": "serial",
+      "star": "@織明"
+    },
+    {
+      "id": "X01",
+      "domain": "X",
+      "name": "主入口整合",
+      "file": "app.py",
+      "lines": 400,
+      "status": "done",
+      "deps": [
+        "F*",
+        "A*",
+        "P*",
+        "L*"
+      ],
+      "exec": "serial",
+      "star": "@織明"
+    },
+    {
+      "id": "X02",
+      "domain": "X",
+      "name": "PYLIB索引",
+      "file": "PYLIB_INDEX.md",
+      "lines": 161,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@織明"
+    },
+    {
+      "id": "X03",
+      "domain": "X",
+      "name": "Checkpoint",
+      "file": "checkpoint.json",
+      "lines": 50,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@理樞"
+    },
+    {
+      "id": "X04",
+      "domain": "X",
+      "name": "Task Chain",
+      "file": "TASK_CHAIN.json",
+      "lines": 200,
+      "status": "done",
+      "deps": [],
+      "exec": "parallel",
+      "star": "@織明"
+    },
+    {
+      "id": "T01",
+      "domain": "T",
+      "name": "綠界正式帳號",
+      "file": null,
+      "lines": 0,
+      "status": "done",
+      "deps": [],
+      "exec": "external",
+      "star": "@北斗",
+      "note": "已從對話記錄找到"
+    },
+    {
+      "id": "T02",
+      "domain": "T",
+      "name": "域名購買",
+      "file": null,
+      "lines": 0,
+      "status": "done",
+      "deps": [],
+      "exec": "external",
+      "star": "@北斗",
+      "note": "已從對話記錄找到"
+    },
+    {
+      "id": "T03",
+      "domain": "T",
+      "name": "SSL證書",
+      "file": null,
+      "lines": 0,
+      "status": "done",
+      "deps": [
+        "T02"
+      ],
+      "exec": "external",
+      "star": "@北斗",
+      "note": "已從對話記錄找到"
+    },
+    {
+      "id": "T04",
+      "domain": "T",
+      "name": "GA4設定",
+      "file": null,
+      "lines": 0,
+      "status": "pending",
+      "deps": [],
+      "exec": "external",
+      "star": "@北斗"
+    },
+    {
+      "id": "T05",
+      "domain": "T",
+      "name": "Sentry設定",
+      "file": null,
+      "lines": 0,
+      "status": "pending",
+      "deps": [],
+      "exec": "external",
+      "star": "@北斗"
+    },
+    {
+      "id": "T06",
+      "domain": "T",
+      "name": "正式部署",
+      "file": null,
+      "lines": 0,
+      "status": "pending",
+      "deps": [
+        "T01",
+        "T02",
+        "T03"
+      ],
+      "exec": "serial",
+      "star": "@北斗"
+    }
+  ]
+}

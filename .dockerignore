@@ -1,0 +1,50 @@
+# ═══════════════════════════════════════════════════════════════════
+# Docker 忽略文件
+# ═══════════════════════════════════════════════════════════════════
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+.eggs
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 測試
+tests/
+*_test.py
+test_*.py
+
+# 文檔
+docs/
+*.md
+!README.md
+
+# 暫存
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# 數據
+data/
+logs/
+*.db
+*.sqlite

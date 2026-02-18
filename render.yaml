@@ -1,14 +1,21 @@
-# Render 部署配置
-# 北斗命數 MVP v3.0
+# 北斗命數 SaaS - Render 部署配置
+# M10.4 | 2026-02-17
 
 services:
   - type: web
     name: beidou-mingshu
-    runtime: python
+    env: python
+    region: singapore
+    plan: starter
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT --workers 2
+    healthCheckPath: /api/health
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11"
-    healthCheckPath: /api/info
-    autoDeploy: true
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ECPAY_SANDBOX
+        value: "false"
+      - key: DATABASE_URL
+        value: sqlite:///./beidou_unified.db

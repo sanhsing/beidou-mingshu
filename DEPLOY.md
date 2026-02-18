@@ -1,78 +1,113 @@
-# 北斗命數 MVP v3.0 部署指南
+# 北斗命數部署指南
+> 版本：v1.0.0 | 日期：2026-02-17 | @澄書
 
-## 更新現有 Render 服務
+## 📋 目錄
 
-### 方法一：GitHub 自動部署（推薦）
+- [環境要求](#環境要求)
+- [本地部署](#本地部署)
+- [Docker 部署](#docker-部署)
+- [生產環境](#生產環境)
 
-如果已連接 GitHub，推送即自動部署：
+---
+
+## 🖥️ 環境要求
+
+| 項目 | 最低要求 | 建議配置 |
+|------|----------|----------|
+| CPU | 1 核心 | 2+ 核心 |
+| 記憶體 | 512MB | 2GB+ |
+| Python | 3.11+ | 3.11 |
+
+---
+
+## 🚀 本地部署
+
+### 1. 安裝依賴
 
 ```bash
-# 1. 進入本地倉庫
-cd beidou-mingshu  # 或你的倉庫目錄
-
-# 2. 拉取最新（避免衝突）
-git pull origin main
-
-# 3. 複製新版本檔案（覆蓋舊的）
-cp -r /path/to/beidou_mvp/* .
-
-# 4. 提交推送
-git add .
-git commit -m "升級到 MVP v3.0 - 康熙筆畫庫+384爻完整"
-git push origin main
-
-# Render 會自動檢測並重新部署
+pip install -r requirements.txt
 ```
 
-### 方法二：Render 手動部署
-
-1. 登入 https://dashboard.render.com
-2. 找到 `beidou-mingshu` 服務
-3. 點擊 "Manual Deploy" → "Deploy latest commit"
-
-### 方法三：從零部署
+### 2. 配置環境變數
 
 ```bash
-# 1. 初始化 Git
-cd beidou_mvp
-git init
-git add .
-git commit -m "北斗命數 MVP v3.0"
+cp .env.example .env
+# 編輯 .env，修改 JWT_SECRET
+```
 
-# 2. 創建 GitHub Repo
-# 到 https://github.com/new 創建 beidou-mingshu
+### 3. 啟動服務
 
-# 3. 推送
-git remote add origin https://github.com/YOUR_USERNAME/beidou-mingshu.git
-git branch -M main
-git push -u origin main
+```bash
+python app.py
+# 或
+./start.sh dev
+```
 
-# 4. 在 Render 連接此 Repo
-# https://dashboard.render.com → New → Web Service → Connect Repo
+### 4. 驗證
+
+```bash
+curl http://localhost:8000/api/health
 ```
 
 ---
 
-## 部署後驗證
+## 🐳 Docker 部署
 
-訪問以下端點確認部署成功：
+```bash
+# 建構
+docker build -t beidou-mingshu .
 
-| 端點 | 說明 |
-|------|------|
-| `/` | 前端首頁 |
-| `/docs` | API 文檔（Swagger） |
-| `/api/info` | 系統資訊 |
-| `/api/v1/bazi` | 八字 API |
+# 啟動
+docker-compose up -d
 
----
-
-## 環境變數（可選）
-
-| 變數 | 說明 | 預設值 |
-|------|------|--------|
-| PORT | 服務端口 | 8000 |
-| DEBUG | 調試模式 | false |
+# 日誌
+docker-compose logs -f
+```
 
 ---
 
-*北斗命數 MVP v3.0 | 2026.02.17*
+## 🌐 生產環境
+
+### Nginx 反向代理
+
+```nginx
+server {
+    listen 443 ssl http2;
+    server_name your-domain.com;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+### Systemd 服務
+
+```ini
+[Unit]
+Description=BeiDou MingShu API
+
+[Service]
+WorkingDirectory=/opt/beidou
+ExecStart=/opt/beidou/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000 --workers 4
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+## 🔧 環境變數
+
+| 變數 | 必須 | 說明 |
+|------|:----:|------|
+| `JWT_SECRET` | ✅ | JWT 密鑰（必改） |
+| `DB_PATH` | ❌ | 數據庫路徑 |
+| `ECPAY_SANDBOX` | ❌ | 綠界測試模式 |
+
+---
+
+*@澄書 | XTF Task Chain D2*

@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "date": "2026-02-18",
+    "source": "OPUS_02180208 + PP_20260218 跨線協作",
+    "curator": "@澄書 @理樞",
+    "database": "business"
+  },
+  "boi_entries": [
+    {
+      "id": "BOI-20260218-001",
+      "title": "AI 模型特性圖譜",
+      "category": "ai_strategy",
+      "insight": "Claude 加戲（垂直深）、ChatGPT 發散（水平廣）、Gemini 空洞（宏觀大）",
+      "application": "馴化法：Claude 用框架指令、ChatGPT 人工踩煞車、Gemini 補細節",
+      "validation": "網路評價驗證：Claude='Meticulous Engineer', Gemini='corporate gibberish'",
+      "tags": ["ai", "工具選擇", "馴化策略"]
+    },
+    {
+      "id": "BOI-20260218-002",
+      "title": "一人公司瓶頸論",
+      "category": "business_model",
+      "insight": "AI 讓 1 人公司技術可行，但 99% 的人缺的不是 AI，是「指揮 AI 的作業系統」",
+      "application": "系統者 <0.5%：需要框架 + 累積 + 迭代機制",
+      "evidence": "問答者 90% / 使用者 8% / 協作者 1.5% / 系統者 <0.5%",
+      "tags": ["一人公司", "瓶頸", "作業系統"]
+    },
+    {
+      "id": "BOI-20260218-003",
+      "title": "北斗獨特性定位",
+      "category": "competitive_advantage",
+      "insight": "不是「用 AI」，是「建了一個 AI 驅動的組織」",
+      "components": {
+        "方法論": "XTF-DOE-Pareto",
+        "組織架構": "11星協作",
+        "資料層": "9庫",
+        "迭代機制": "handover + 備份"
+      },
+      "differentiation": "一般用戶=問答模式，北斗=協作模式",
+      "tags": ["競爭優勢", "組織設計", "AI協作"]
+    },
+    {
+      "id": "BOI-20260218-004",
+      "title": "Perplexity vs Claude 定位",
+      "category": "tool_strategy",
+      "insight": "Perplexity = 查證專精（圖書館員），Claude = 分析專精（研究員）",
+      "optimal_flow": "Perplexity（前鋒查證）→ Claude（後衛分析）",
+      "use_cases": {
+        "perplexity_wins": ["市場數據查詢", "競品來源", "即時法規"],
+        "claude_wins": ["分析解讀", "策略建議", "報告撰寫"]
+      },
+      "tags": ["工具鏈", "分工策略", "市調"]
+    },
+    {
+      "id": "BOI-20260218-005",
+      "title": "科技紫微網對標分析",
+      "category": "competitor_analysis",
+      "insight": "張盛舒一人開發起步 → 月 PV 2000 萬 → 年收 NT$5-10 億",
+      "model": {
+        "起點": "一人開發紫微排盤",
+        "AI應用": "定盤準確率 93%",
+        "變現": "廣告 + 付費報告"
+      },
+      "beidou_differentiation": [
+        "三層翻譯（62個白話）",
+        "場論框架（道=元迷因）",
+        "多術數整合（八字+紫微+梅花+奇門）",
+        "188 API 端點"
+      ],
+      "tags": ["競品分析", "對標", "科技紫微網"]
+    }
+  ],
+  "market_data": {
+    "global_astrology_2024": "$147億 USD",
+    "china_metaphysics_2028": "¥1851億",
+    "taiwan_fortune_2024": "NT$2.9億 (官方) / NT$50億 (潛力)",
+    "china_ai_fortune_users": ">3億",
+    "taiwan_growth_5yr": "4.1倍"
+  },
+  "action_items": [
+    {"priority": 1, "item": "完成 MVP", "status": "進行中"},
+    {"priority": 2, "item": "收款整合 (Stripe/綠界)", "status": "待辦"},
+    {"priority": 3, "item": "FAQ 知識庫 + Chatbot", "status": "待辦"},
+    {"priority": 4, "item": "行銷漏斗", "status": "待辦"}
+  ]
+}

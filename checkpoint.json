@@ -1,0 +1,195 @@
+{
+  "version": "1.0",
+  "project": "beidou_mingshu_saas",
+  "created": "2026-02-17T20:30:00+08:00",
+  "last_updated": "2026-02-17T15:17:24.220491",
+  "modules": {
+    "M1": {
+      "name": "法律文件",
+      "status": "completed",
+      "tasks": 9,
+      "completed": 9
+    },
+    "M2": {
+      "name": "落地頁",
+      "status": "completed",
+      "tasks": 12,
+      "completed": 12
+    },
+    "M3": {
+      "name": "免費試算",
+      "status": "completed",
+      "tasks": 8,
+      "completed": 8
+    },
+    "M4": {
+      "name": "定價頁升級",
+      "status": "completed",
+      "tasks": 6,
+      "completed": 6
+    },
+    "M5": {
+      "name": "儀表板升級",
+      "status": "completed",
+      "tasks": 8,
+      "completed": 8
+    },
+    "M6": {
+      "name": "報告美化",
+      "status": "completed",
+      "tasks": 8,
+      "completed": 8
+    },
+    "M7": {
+      "name": "Email通知",
+      "status": "completed",
+      "tasks": 7,
+      "completed": 7
+    },
+    "M8": {
+      "name": "會員訂閱",
+      "status": "completed",
+      "tasks": 7,
+      "completed": 7
+    },
+    "M9": {
+      "name": "支付驗證",
+      "status": "completed",
+      "tasks": 5,
+      "completed": 5
+    },
+    "M10": {
+      "name": "部署上線",
+      "status": "completed",
+      "tasks": 9,
+      "completed": 9
+    },
+    "M11": {
+      "name": "監控追蹤",
+      "status": "completed",
+      "tasks": 5,
+      "completed": 5
+    },
+    "M12": {
+      "name": "客服FAQ",
+      "status": "completed",
+      "tasks": 6,
+      "completed": 6
+    }
+  },
+  "current": {
+    "module": "M4",
+    "task": "M4.1",
+    "phase": "pending"
+  },
+  "outputs": {
+    "M1": [
+      "legal/privacy.md",
+      "legal/terms.md",
+      "legal/refund.md",
+      "legal/disclaimer.md",
+      "legal_routes.py"
+    ],
+    "M3": [
+      "bazi_free.py",
+      "wuxing_simple.py",
+      "free_trial.py"
+    ],
+    "M2": [
+      "landing_page.py"
+    ],
+    "integration": [
+      "app_integration.py"
+    ],
+    "M9": [
+      "tests/test_payment.py"
+    ],
+    "M4": [
+      "pricing_page.py"
+    ],
+    "M7": [
+      "email_service.py"
+    ],
+    "M12": [
+      "faq_page.py"
+    ],
+    "M5": [
+      "dashboard_v2.py"
+    ],
+    "M6": [
+      "report_styles.py",
+      "report_charts.py"
+    ],
+    "M8": [
+      "membership_service.py"
+    ],
+    "M10": [
+      "requirements.txt",
+      "render.yaml",
+      ".env.production",
+      "health_check.py"
+    ],
+    "M11": [
+      "monitoring.py"
+    ]
+  },
+  "stats": {
+    "total_tasks": 90,
+    "completed_tasks": 90,
+    "progress_percent": 100,
+    "spec_completion": 100,
+    "total_lines": 1885
+  },
+  "supplements": [
+    {
+      "batch": "P0_商業閉環",
+      "date": "2026-02-17",
+      "modules": [
+        "checkout.py",
+        "payment_flow.py",
+        "credits_api.py"
+      ],
+      "lines": 1106,
+      "status": "completed"
+    },
+    {
+      "batch": "剩餘10%補完",
+      "date": "2026-02-17",
+      "modules": [
+        "legal/cookie.md",
+        "membership_page.py",
+        "matching_page.py"
+      ],
+      "lines": 779,
+      "status": "completed"
+    }
+  ],
+  "routes": {
+    "frontend": [
+      "/",
+      "/free",
+      "/pricing",
+      "/dashboard",
+      "/checkout",
+      "/membership",
+      "/matching",
+      "/help",
+      "/faq"
+    ],
+    "api": [
+      "/api/health",
+      "/api/payment/notify",
+      "/api/user/credits",
+      "/api/user/orders",
+      "/api/auth/*",
+      "/api/bazi/*"
+    ],
+    "legal": [
+      "/legal/privacy",
+      "/legal/terms",
+      "/legal/refund",
+      "/legal/disclaimer",
+      "/legal/cookie"
+    ]
+  }
+}
